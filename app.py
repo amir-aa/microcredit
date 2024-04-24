@@ -1,9 +1,22 @@
 from flask import Blueprint, request, jsonify
 from models import Wallet, Transaction
 from datetime import datetime
-
+from functools import wraps
 wallet_bp = Blueprint('wallet', __name__, url_prefix='/wallet')
+KEY='OTESTkey'
+def api_key_required(api_key):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            provided_key = request.headers.get('API-Key')
 
+            if not provided_key or provided_key != api_key:
+                return jsonify({'error': 'Unauthorized'}), 401
+
+            return func(*args, **kwargs)
+
+        return wrapper
+    return decorator
 @wallet_bp.route('/create', methods=['POST'])
 def create_wallet():
     data = request.json
@@ -18,6 +31,7 @@ def create_wallet():
         return jsonify({'error': 'Username already exists'}), 400
 
 @wallet_bp.route('/add_credit/<int:wallet_id>', methods=['POST'])
+@api_key_required(KEY)
 def add_credit(wallet_id):
     data = request.json
     amount = data.get('amount')
@@ -35,6 +49,7 @@ def add_credit(wallet_id):
         return jsonify({'error': 'Wallet not found'}), 404
 
 @wallet_bp.route('/decrease_credit/<int:wallet_id>', methods=['POST'])
+@api_key_required(KEY)
 def decrease_credit(wallet_id):
     data = request.json
     amount = data.get('amount')
