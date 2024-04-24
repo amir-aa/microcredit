@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify,Flask
 from models import Wallet, Transaction
 from datetime import datetime
 from functools import wraps
 wallet_bp = Blueprint('wallet', __name__, url_prefix='/wallet')
+app=Flask(__name__)
 KEY='OTESTkey'
 def api_key_required(api_key):
     def decorator(func):
@@ -74,3 +75,6 @@ def get_balance(wallet_id):
         return jsonify({'balance': wallet.balance}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
+
+if __name__=="__main__":
+    app.run()

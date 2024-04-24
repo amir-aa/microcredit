@@ -1,6 +1,7 @@
 from peewee import *
 
-db = SqliteDatabase('wallet.db')
+db = MySQLDatabase('wallet',user='main', password='adl@p144',
+                   host='localhost', port=3309)
 
 class BaseModel(Model):
     class Meta:
@@ -15,3 +16,7 @@ class Transaction(BaseModel):
     description = TextField()
     amount = FloatField()
     timestamp = DateTimeField()
+def init():
+    db.create_tables([Wallet,Transaction],safe=True)
+
+init()
