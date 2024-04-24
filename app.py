@@ -4,6 +4,7 @@ from datetime import datetime
 from functools import wraps
 wallet_bp = Blueprint('wallet', __name__, url_prefix='/wallet')
 app=Flask(__name__)
+app.register_blueprint(wallet_bp)
 KEY='OTESTkey'
 def api_key_required(api_key):
     def decorator(func):
