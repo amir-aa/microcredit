@@ -42,7 +42,7 @@ def add_credit(wallet_id):
         return jsonify({'error': 'Amount and description are required'}), 400
     
     try:
-        wallet = Wallet.get_by_id(wallet_id)
+        wallet = Wallet.get_by_id(int(wallet_id))
         wallet.balance += amount
         wallet.save()
         Transaction.create(wallet=wallet, description=description, amount=amount, timestamp=datetime.now())
@@ -60,7 +60,7 @@ def decrease_credit(wallet_id):
         return jsonify({'error': 'Amount and description are required'}), 400
     
     try:
-        wallet = Wallet.get_by_id(wallet_id)
+        wallet = Wallet.get_by_id(int(wallet_id))
         if wallet.balance < amount:
             return jsonify({'error': 'Insufficient funds'}), 400
         wallet.balance -= amount
@@ -72,7 +72,7 @@ def decrease_credit(wallet_id):
 @wallet_bp.route('/balance/<int:wallet_id>', methods=['GET'])
 def get_balance(wallet_id):
     try:
-        wallet = Wallet.get_by_id(wallet_id)
+        wallet = Wallet.get_by_id(int(wallet_id))
         return jsonify({'balance': wallet.balance}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
