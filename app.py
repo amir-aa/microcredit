@@ -76,6 +76,15 @@ def get_balance(wallet_id):
         return jsonify({'balance': wallet.balance}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
+    
+@wallet_bp.route('/getWalletID/<str:username>', methods=['GET'])
+def get_id(username):
+    try:
+        wallet = Wallet.get(Wallet.username==username)
+        return jsonify({'id': wallet.id}), 200
+    except Wallet.DoesNotExist:
+        return jsonify({'error': 'Wallet not found'}), 404
+    
 app.register_blueprint(wallet_bp)
 if __name__=="__main__":
     app.run()
