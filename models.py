@@ -1,6 +1,6 @@
 from peewee import *
-
-db = MySQLDatabase('wallet',user='main', password='adl@p144',
+from playhouse.pool import PooledMySQLDatabase
+db = PooledMySQLDatabase('wallet',user='main', password='adl',
                    host='localhost', port=3309)
 
 class BaseModel(Model):
