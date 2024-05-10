@@ -77,7 +77,7 @@ def get_balance(wallet_id):
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
     
-@wallet_bp.route('/getWalletID/<str:username>', methods=['GET'])
+@wallet_bp.route('/getWalletID/<username>', methods=['GET'])
 def get_id(username):
     try:
         wallet = Wallet.get(Wallet.username==username)
