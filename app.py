@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify,Flask
 from models import Wallet, Transaction
 from datetime import datetime
 from functools import wraps
+import peewee,logging
 wallet_bp = Blueprint('wallet', __name__, url_prefix='/wallet')
 app=Flask(__name__)
 
@@ -49,7 +50,9 @@ def add_credit(wallet_id):
         return jsonify({'message': 'Credit added successfully'}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
-
+    except peewee.OperationalError as ex:
+        logging.error(f"Operational Problem / Connection Error:: {str(ex)}")
+        return jsonify({'error': 'Operational Error'}), 500
 @wallet_bp.route('/decrease_credit/<int:wallet_id>', methods=['POST'])
 @api_key_required(KEY)
 def decrease_credit(wallet_id):
@@ -69,6 +72,9 @@ def decrease_credit(wallet_id):
         return jsonify({'message': 'Credit decreased successfully'}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
+    except peewee.OperationalError as ex:
+        logging.error(f"Operational Problem / Connection Error:: {str(ex)}")
+        return jsonify({'error': 'Operational Error'}), 500
 @wallet_bp.route('/balance/<int:wallet_id>', methods=['GET'])
 def get_balance(wallet_id):
     try:
@@ -76,15 +82,18 @@ def get_balance(wallet_id):
         return jsonify({'balance': wallet.balance}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
-    
-@wallet_bp.route('/getWalletID/<str:username>', methods=['GET'])
+    except peewee.OperationalError as ex:
+        logging.error(f"Operational Problem / Connection Error:: {str(ex)}")
+@wallet_bp.route('/getWalletID/<username>', methods=['GET'])
 def get_id(username):
     try:
         wallet = Wallet.get(Wallet.username==username)
         return jsonify({'id': wallet.id}), 200
     except Wallet.DoesNotExist:
         return jsonify({'error': 'Wallet not found'}), 404
-    
+    except peewee.OperationalError as ex:
+        logging.error(f"Operational Problem / Connection Error:: {str(ex)}")
+        return jsonify({'error': 'Operational Error'}), 500
 app.register_blueprint(wallet_bp)
 if __name__=="__main__":
     app.run()
