@@ -1,7 +1,7 @@
 from peewee import *
 from playhouse.pool import PooledMySQLDatabase
 db = PooledMySQLDatabase('wallet',user='main', password='adl`',
-                   host='localhost', port=3309)
+                   host='localhost', port=3309,max_connections=8, stale_timeout=300,connect_timeout=100)
 
 class BaseModel(Model):
     class Meta:

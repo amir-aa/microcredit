@@ -94,6 +94,9 @@ def get_id(username):
     except peewee.OperationalError as ex:
         logging.error(f"Operational Problem / Connection Error:: {str(ex)}")
         return jsonify({'error': 'Operational Error'}), 500
+    except Exception as ex:
+        logging.error(f"Operational Problem / Connection Error:: {str(ex)}")
+        return jsonify({'error': 'Operational Error'}), 502
 app.register_blueprint(wallet_bp)
 if __name__=="__main__":
     app.run()
